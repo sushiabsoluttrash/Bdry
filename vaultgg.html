@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VaultGG — Suas Conquistas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070a; --bg2:#101014; --panel:#16161b; --panel2:#1d1d23;
+  --gold:#d4af37; --gold-soft:#f2d98d; --text:#f2ede1; --muted:#98938a; --border:#2a2a31;
+  color-scheme: dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100%}
+h1,h2,h3,.brand{font-family:'Cinzel',Georgia,serif}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
+.brand{font-size:1.25rem;color:var(--gold);letter-spacing:.5px;font-weight:700}
+nav{display:flex;gap:6px}
+.tab{background:none;border:1px solid transparent;color:var(--muted);padding:8px 16px;border-radius:999px;cursor:pointer;font-size:.92rem;transition:border-color .2s,color .2s}
+.tab.active,.tab:hover{color:var(--gold);border-color:var(--gold)}
+main{max-width:960px;margin:0 auto;padding:30px 20px 70px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.profile-card{display:flex;gap:22px;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:26px;flex-wrap:wrap}
+.avatar-wrap{position:relative;width:84px;height:84px;border-radius:50%;cursor:pointer;flex-shrink:0;border:2px solid var(--gold);overflow:hidden}
+.avatar-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar-edit{position:absolute;bottom:0;right:0;background:var(--gold);color:#140f02;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem}
+.profile-info{flex:1;min-width:210px}
+.name-input{background:none;border:none;border-bottom:1px solid transparent;color:var(--text);font-size:1.35rem;font-weight:600;padding:2px 0;width:100%;max-width:280px;font-family:inherit}
+.name-input:hover,.name-input:focus{border-color:var(--gold);outline:none}
+.stats{display:flex;gap:18px;margin:8px 0 16px;flex-wrap:wrap}
+.stat{color:var(--muted);font-size:.88rem;padding-left:18px;border-left:1px solid var(--border)}
+.stat:first-child{padding-left:0;border-left:none}
+.stat strong{color:var(--text);font-size:1rem}
+.btn-gold{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#1a1405;border:none;padding:10px 20px;border-radius:10px;font-weight:600;cursor:pointer;font-size:.92rem}
+.btn-gold:hover{filter:brightness(1.08)}
+.btn-outline{background:none;border:1px solid var(--gold);color:var(--gold);padding:9px 18px;border-radius:10px;cursor:pointer;font-size:.92rem}
+.btn-outline:hover{background:rgba(212,175,55,.1)}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:8px 0 6px;flex-wrap:wrap;gap:10px}
+.section-sub{color:var(--muted);font-size:.9rem;margin:0 0 20px}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:18px}
+.game-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px}
+.game-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.game-head strong{font-size:1.02rem}
+.icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.95rem;line-height:1}
+.icon-btn:hover{color:#d65b5b}
+.small{font-size:.78rem}
+.muted{color:var(--muted)}
+.game-rank{margin:10px 0;color:var(--gold-soft);font-size:.88rem}
+.items-wrap{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--panel2);border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:.76rem;display:inline-flex;align-items:center;gap:6px}
+.chip i{font-style:normal;cursor:pointer;color:var(--muted)}
+.chip i:hover{color:#d65b5b}
+.chip-add{cursor:pointer;border-style:dashed;color:var(--gold)}
+table{width:100%;border-collapse:collapse;margin-top:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);font-size:.92rem}
+th{color:var(--muted);font-weight:500;font-size:.82rem}
+.me-row{background:rgba(212,175,55,.08)}
+.you-badge{background:var(--gold);color:#140f02;font-size:.68rem;padding:1px 8px;border-radius:999px;margin-left:8px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--panel);border:1px solid var(--gold);border-radius:16px;padding:24px;width:100%;max-width:380px}
+.modal h3{margin-top:0}
+.modal input{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:8px;margin-bottom:10px;font-size:.92rem}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
+.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.platform-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;font-size:.9rem}
+.platform-btn:hover{border-color:var(--gold);color:var(--gold)}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:20px;border-top:1px solid var(--border)}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--gold);color:#140f02;padding:10px 20px;border-radius:999px;font-weight:600;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:100}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<header class="topbar">
+  <div class="brand">🏆 VaultGG</div>
+  <nav>
+    <button data-tab="perfil" class="tab active">Perfil</button>
+    <button data-tab="jogos" class="tab">Meus Jogos</button>
+    <button data-tab="ranking" class="tab">Ranking</button>
+  </nav>
+</header>
+
+<main>
+  <section id="tab-perfil" class="tab-content active">
+    <div class="profile-card">
+      <div class="avatar-wrap" id="avatarWrap">
+        <img id="avatarImg" src="" alt="Avatar do jogador">
+        <span class="avatar-edit">✎</span>
+        <input type="file" id="avatarInput" accept="image/*" hidden>
+      </div>
+      <div class="profile-info">
+        <input id="nameInput" class="name-input" value="">
+        <div class="stats">
+          <span class="stat"><strong id="statGames">0</strong> jogos</span>
+          <span class="stat"><strong id="statItems">0</strong> itens</span>
+          <span class="stat"><strong id="statLevel">0</strong> nível máx.</span>
+        </div>
+        <button id="linkBtn" class="btn-gold">+ Vincular conta de jogo</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-jogos" class="tab-content">
+    <div class="section-head">
+      <h2>Meus Jogos</h2>
+      <button id="addGameBtn" class="btn-outline">+ Adicionar jogo</button>
+    </div>
+    <p class="section-sub">Cadastre os jogos que você joga, seu rank ou nível em cada um e os itens que conquistou.</p>
+    <div id="gamesGrid" class="games-grid"></div>
+  </section>
+
+  <section id="tab-ranking" class="tab-content">
+    <h2>Ranking de Jogadores</h2>
+    <p class="section-sub">Classificação pelo maior nível alcançado entre todos os jogos cadastrados. Os demais jogadores listados são exemplos ilustrativos.</p>
+    <table>
+      <thead><tr><th>Posição</th><th>Jogador</th><th>Nível</th><th>Jogos</th></tr></thead>
+      <tbody id="rankBody"></tbody>
+    </table>
+  </section>
+</main>
+
+<footer>🔒 Seus dados ficam salvos apenas neste navegador.</footer>
+
+<div id="modalGame" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>Adicionar jogo</h3>
+    <form id="gameForm">
+      <input name="name" placeholder="Nome do jogo" required>
+      <input name="platform" placeholder="Plataforma (Steam, PSN, Xbox...)">
+      <input name="rank" placeholder="Rank (ex.: Diamante II)">
+      <input name="level" type="number" min="0" placeholder="Nível">
+      <div class="modal-actions">
+        <button type="button" class="btn-outline" onclick="closeModal('modalGame')">Cancelar</button>
+        <button type="submit" class="btn-gold">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="modalItem" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>Adicionar item ao inventário</h3>
+    <form id="itemForm">
+      <input name="item" placeholder="Nome do item" required>
+      <div class="modal-actions">
+        <button type="button" class="btn-outline" onclick="closeModal('modalItem')">Cancelar</button>
+        <button type="submit" class="btn-gold">Adicionar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="modalLink" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>Vincular conta de jogo</h3>
+    <p class="section-sub">Modo demonstração: a integração real com cada plataforma exigiria um servidor autenticado via OAuth com a API oficial (Steam, Riot, PSN etc.), o que uma página hospedada sozinha não consegue fazer. Escolha uma abaixo para ver um exemplo de como ficaria.</p>
+    <div class="platform-grid">
+      <button class="platform-btn" data-p="Steam">Steam</button>
+      <button class="platform-btn" data-p="Riot Games">Riot Games</button>
+      <button class="platform-btn" data-p="Epic Games">Epic Games</button>
+      <button class="platform-btn" data-p="PlayStation">PlayStation</button>
+      <button class="platform-btn" data-p="Xbox">Xbox</button>
+    </div>
+    <button class="btn-outline" onclick="closeModal('modalLink')" style="width:100%">Fechar</button>
+  </div>
+</div>
+
+<script>
+const LS_KEY='vaultgg_v1';
+const SAMPLE_PLAYERS=[
+ {name:'ShadowReaper',level:87,games:14},
+ {name:'LunaStrike',level:76,games:9},
+ {name:'KaelVortex',level:64,games:11},
+ {name:'MikaBlaze',level:52,games:6},
+ {name:'DJCrimson',level:41,games:8}
+];
+function loadState(){
+ try{const raw=localStorage.getItem(LS_KEY); if(raw) return JSON.parse(raw);}catch(e){}
+ return {profile:{name:'Jogador1',avatar:null},games:[]};
+}
+let state=loadState();
+function saveState(){try{localStorage.setItem(LS_KEY,JSON.stringify(state));}catch(e){}}
+function uid(){return Math.random().toString(36).slice(2,9);}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function defaultAvatar(){
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#16161b"/><circle cx="50" cy="36" r="17" fill="#d4af37"/><rect x="18" y="60" width="64" height="34" rx="17" fill="#d4af37"/></svg>';
+ return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
+}
+
+function render(){
+ document.getElementById('nameInput').value=state.profile.name;
+ document.getElementById('avatarImg').src=state.profile.avatar||defaultAvatar();
+ const maxLevel=state.games.reduce((m,g)=>Math.max(m,Number(g.level)||0),0);
+ const totalItems=state.games.reduce((s,g)=>s+g.items.length,0);
+ document.getElementById('statGames').textContent=state.games.length;
+ document.getElementById('statItems').textContent=totalItems;
+ document.getElementById('statLevel').textContent=maxLevel;
+
+ const grid=document.getElementById('gamesGrid');
+ grid.innerHTML=state.games.length?'':'<p class="muted">Nenhum jogo adicionado ainda. Clique em “Adicionar jogo” para começar.</p>';
+ state.games.forEach(g=>{
+   const card=document.createElement('div');
+   card.className='game-card';
+   card.innerHTML=`
+     <div class="game-head">
+       <div><strong>${esc(g.name)}</strong><div class="muted small">${esc(g.platform||'—')}</div></div>
+       <button class="icon-btn" onclick="removeGame('${g.id}')" title="Remover jogo">✕</button>
+     </div>
+     <div class="game-rank">🏅 ${esc(g.rank||'Sem rank')} · Nível ${g.level||0}</div>
+     <div class="items-wrap">
+       ${g.items.map((it,i)=>`<span class="chip">${esc(it)} <i onclick="removeItem('${g.id}',${i})">✕</i></span>`).join('')}
+       <span class="chip chip-add" onclick="openItemModal('${g.id}')">+ item</span>
+     </div>`;
+   grid.appendChild(card);
+ });
+
+ const mine={name:state.profile.name||'Você',level:maxLevel,games:state.games.length,isMe:true};
+ const all=[...SAMPLE_PLAYERS.map(p=>({...p,isMe:false})),mine].sort((a,b)=>b.level-a.level);
+ document.getElementById('rankBody').innerHTML=all.map((p,i)=>`
+   <tr class="${p.isMe?'me-row':''}">
+     <td>${i+1}º</td>
+     <td>${esc(p.name)}${p.isMe?'<span class="you-badge">você</span>':''}</td>
+     <td>${p.level}</td>
+     <td>${p.games}</td>
+   </tr>`).join('');
+}
+
+document.querySelectorAll('.tab').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+   btn.classList.add('active');
+   document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+ });
+});
+
+document.getElementById('nameInput').addEventListener('change',e=>{
+ state.profile.name=e.target.value.trim()||'Jogador1';
+ saveState(); render();
+});
+
+document.getElementById('avatarWrap').addEventListener('click',()=>document.getElementById('avatarInput').click());
+document.getElementById('avatarInput').addEventListener('change',e=>{
+ const file=e.target.files[0]; if(!file) return;
+ const reader=new FileReader();
+ reader.onload=()=>{state.profile.avatar=reader.result; saveState(); render();};
+ reader.readAsDataURL(file);
+});
+
+function openModal(id){document.getElementById(id).classList.remove('hidden');}
+function closeModal(id){document.getElementById(id).classList.add('hidden');}
+
+document.getElementById('addGameBtn').addEventListener('click',()=>openModal('modalGame'));
+document.getElementById('gameForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const f=new FormData(e.target);
+ state.games.push({id:uid(),name:f.get('name'),platform:f.get('platform'),rank:f.get('rank'),level:Number(f.get('level'))||0,items:[]});
+ saveState(); render(); closeModal('modalGame'); e.target.reset();
+ toast('Jogo adicionado!');
+});
+function removeGame(id){state.games=state.games.filter(g=>g.id!==id); saveState(); render();}
+
+let itemTarget=null;
+function openItemModal(gameId){itemTarget=gameId; openModal('modalItem');}
+document.getElementById('itemForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const f=new FormData(e.target);
+ const g=state.games.find(g=>g.id===itemTarget);
+ if(g){g.items.push(f.get('item')); saveState(); render();}
+ closeModal('modalItem'); e.target.reset();
+});
+function removeItem(gameId,idx){
+ const g=state.games.find(g=>g.id===gameId);
+ if(g){g.items.splice(idx,1); saveState(); render();}
+}
+
+document.getElementById('linkBtn').addEventListener('click',()=>openModal('modalLink'));
+document.querySelectorAll('.platform-btn').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+   const platform=btn.dataset.p;
+   const demo=({
+     'Steam':{name:'Counter-Strike 2',rank:'Águia Mestre',level:45,items:['AK-47 Redline','Faca Karambit']},
+     'Riot Games':{name:'Valorant',rank:'Imortal 2',level:68,items:['Skin Phantom Reaver','Spray exclusivo']},
+     'Epic Games':{name:'Fortnite',rank:'Elite',level:132,items:['Skin lendária','Picareta rara']},
+     'PlayStation':{name:'Troféus PSN',rank:'Nível 312',level:58,items:['Platina: Elden Ring']},
+     'Xbox':{name:'Xbox Live',rank:'Gamerscore 45k',level:50,items:['Conquista rara']}
+   })[platform]||{name:platform,rank:'Vinculado',level:1,items:[]};
+   state.games.push({id:uid(),name:demo.name,platform:platform+' (demo)',rank:demo.rank,level:demo.level,items:demo.items});
+   saveState(); render(); closeModal('modalLink');
+   toast(platform+' vinculado — dados de demonstração');
+ });
+});
+
+function toast(msg){
+ const t=document.getElementById('toast');
+ t.textContent=msg; t.classList.add('show');
+ setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+render();
+</script>
+</body>
+</html>
